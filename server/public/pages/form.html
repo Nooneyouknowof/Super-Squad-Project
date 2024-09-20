@@ -1,112 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact Form</title>
-  </head>
-  <body>
-    <h1>Contact Form</h1>
-    <form action="/submit-form" method="POST">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required /><br /><br />
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required /><br /><br />
-      <label for="message">Message:</label><br />
-      <textarea
-        id="message"
-        name="message"
-        rows="4"
-        cols="50"
-        required
-      ></textarea
-      ><br /><br />
-      <input type="submit" value="Submit" />
-    </form>
-    <h1>User Management</h1>
-    <form id="updateForm">
-      <label for="currentName">Current name:</label>
-      <input type="text" id="currentName" required /><br /><br />
-      <label for="currentEmail">Current email:</label>
-      <input type="email" id="currentEmail" required /><br /><br />
-      <label for="newName">New name:</label>
-      <input type="text" id="newName" required /><br /><br />
-      <label for="newEmail">New email:</label>
-      <input type="email" id="newEmail" required /><br /><br />
-      <button type="submit">Update User</button>
-    </form>
-    <h1>Show Users</h1>
-    <table id="usersTable">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Hero Form</title>
+  <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+      transition: all 0.25s ease-in-out;
+    }
+
+    body {
+      padding: 2rem;
+      gap: 2rem;
+      display: flex;
+      flex-direction: column;
+      background-color: lightslategray;
+    }
+
+    form, #table {
+      background-color: white;
+      justify-content: center;
+      flex-direction: column;
+      display: flex;
+      gap: 1rem;
+      width: 50vw;
+      margin: auto;
+      padding: 1rem;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      border-radius: 1rem;
+      box-shadow: 10px 5px 5px rgba(0,0,0,0.25);
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      text-shadow: 5px 5px 5px rgba(0,0,0,0.25);
+      padding-bottom: 1rem;
+    }
+
+    table,
+    tr > * {
+      border: 1px solid;
+      border-radius: 0.25rem;
+      padding: 0.25rem;
+      background-color: white;
+      box-shadow: 10px 5px 5px rgba(0,0,0,0.25);
+    }
+
+    table {
+      margin: auto;
+      padding: 0.5rem;
+      border-radius: 1rem;
+      background-color: grey;
+    }
+
+    input {
+      padding: 0.2rem;
+      padding-left: 0.25rem;
+      border-radius: 0.25rem;
+      box-shadow: 2px 4px 5px rgba(0,0,0,0.2);
+      border: none;
+      outline: none;
+    }
+
+    button {
+      justify-self: center;
+      padding: 0.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      box-shadow: 2px 4px 5px rgba(0,0,0,0.25);
+    }
+    button:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="table">
+    <h1>Superhero Database</h1>
+    <table>
       <thead>
-        <tr>
-          <th>User Name</th>
-          <th>User Email</th>
-        </tr>
+        <tr><th>Name: </th><th>Power: </th><th>Universe: </th></tr>
       </thead>
-      <tbody id="userTableBody">
-        <!-- data of users will be rendered here -->
+      <tbody id="heros_table">
+
       </tbody>
     </table>
-    <script>
-      document
-        .getElementById("updateForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const currentName = document.getElementById("currentName").value;
-          const currentEmail = document.getElementById("currentEmail").value;
-          const newName = document.getElementById("newName").value;
-          const newEmail = document.getElementById("newEmail").value;
-          try {
-            const response = await fetch(
-              `/update-user/${currentName}/${currentEmail}`,
-              {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ newName, newEmail }),
-              }
-            );
-            const data = await response.json();
-            console.log(data);
-            renderUsers();
-            // alert("Message is: " + data.message);
-          } catch (error) {
-            alert("Error updating user: " + error.message);
-          }
-        });
-      async function fetchUsers() {
-        try {
-          const response = await fetch("/users");
-          if (!response.ok) {
-            throw new Error("Error fetching users. Response not ok");
-          }
-          // there could be an error getting response/fetching the endpoint
-          console.log(response);
-          const users = await response.json();
-          // there could be an error parsing the response
-          // console.log(users);
-          return users;
-        } catch (error) {
-          console.error("There was a problem");
-          console.error(error);
-        }
+  </div>
+  <form action="submit-hero" method="post">
+    <h1>Superhero Registration Form</h1>
+    <div class="row">
+      <label for="name">Name: </label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="row">
+      <label for="power">Powers: </label>
+      <input type="text" id="power" name="power" placeholder="Flight, Strength, etc." required>
+    </div>
+    <div class="row">
+      <label for="universe">Universe: </label>
+      <input type="text" id="universe" name="universe" required>
+    </div>
+    <div class="row">
+      <button type="submit">Submit Form</button>
+    </div>
+  </form>
+  <form id="update-hero-form">
+    <h1>Superhero Update Form</h1>
+    <div class="row">
+      <label for="old_name">Name: </label>
+      <input type="text" id="old_name" name="old_name" required>
+    </div>
+    <div class="row">
+      <label for="old_power">Powers: </label>
+      <input type="text" id="old_power" name="old_power" placeholder="Flight, Strength, etc." required>
+    </div>
+    <div class="row">
+      <label for="old_universe">Universe: </label>
+      <input type="text" id="old_universe" name="old_universe" required>
+    </div>
+    <div class="row">
+      <label for="new_name">New Name: </label>
+      <input type="text" id="new_name" name="new_name" required>
+    </div>
+    <div class="row">
+      <label for="new_power">New Powers: </label>
+      <input type="text" id="new_power" name="new_power" placeholder="Flight, Strength, etc." required>
+    </div>
+    <div class="row">
+      <label for="new_universe">New Universe: </label>
+      <input type="text" id="new_universe" name="new_universe" required>
+    </div>
+    <div class="row">
+      <button type="submit">Update Form</button>
+    </div>
+  </form>
+  <script>
+    const updateTable = async () => {
+      const form = await fetch("/hero-form");
+      const data = await form.json();
+      const herosTable = document.getElementById("heros_table");
+      herosTable.innerHTML = "";
+      data.map(user => {
+        herosTable.innerHTML += `<tr><td>${user.name}</td><td>${user.power}</td><td>${user.universe}</td></tr>`;
+      });
+    }
+    document.addEventListener("DOMContentLoaded", updateTable);
+    const updateHeroForm = document.getElementById("update-hero-form")
+    updateHeroForm.addEventListener("submit", e =>{
+      const old_name = document.getElementById("old_name").value;
+      const old_power = document.getElementById("old_power").value;
+      const old_universe = document.getElementById("old_universe").value;
+      const new_name = document.getElementById("new_name").value;
+      const new_power = document.getElementById("new_power").value;
+      const new_universe = document.getElementById("new_universe").value;
+      e.preventDefault();
+      try {
+        fetch("/update-hero", {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({old_name, old_power, old_universe, new_name, new_power, new_universe})
+        }).then(data => {
+          updateTable();
+        })
+      } catch (error) {
+        console.error(error);
       }
-
-      async function renderUsers() {
-        const tableBody = document.getElementById("userTableBody");
-        tableBody.innerHTML = "";
-        try {
-          const users = await fetchUsers();
-          if (Array.isArray(users) && users.length > 0) {
-            users.forEach((user) => {
-              const row = `<tr><td>${user.name}</td><td>${user.email}</td></tr>`;
-              tableBody.innerHTML += row;
-            });
-          }
-        } catch (error) {}
-      }
-      document.addEventListener("DOMContentLoaded", renderUsers);
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>

@@ -10,6 +10,7 @@ const app = express();
 // Define paths
 const clientPath = path.join(__dirname, '..', 'client/src');
 const dataPath = path.join(__dirname, 'data', 'users.json');
+const heroData = path.join(__dirname, 'data', 'superheros.json');
 const serverPublic = path.join(__dirname, 'public');
 // Middleware setup
 app.use(express.static(clientPath)); // Serve static files from client directory
@@ -103,6 +104,48 @@ app.put('/update-user/:currentName/:currentEmail', async (req, res) => {
         res.status(500).send('An error occurred while updating the user.');
     }
 });
+// Super Hero Form Server Code
+app.get("/hero-form", async (req, res) => {
+    try {
+        const data = await fs.readFile(heroData, 'utf8');
+        res.status(200).send(data)
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.toString());
+    }
+});
+
+app.post("/submit-hero", async (req, res) => {
+    try {
+        const { name, power, universe } = req.body;
+        const data = await fs.readFile(heroData, 'utf8');
+        users = JSON.parse(data);
+        users.push({ name, power, universe });
+        await fs.writeFile(heroData, JSON.stringify(users, null, 2));
+        res.redirect("/form");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.toString());
+    }
+});
+
+app.put("/update-hero", async (req, res) => {
+    try {
+        const { old_name, old_power, old_universe, new_name, new_power, new_universe } = req.body;
+        const data = await fs.readFile(heroData, 'utf8');
+        let users = JSON.parse(data);
+        const index = users.findIndex(user => user.name === old_name && user.power === old_power && user.universe === old_universe);
+        users[index].name = new_name;
+        users[index].power = new_power;
+        users[index].universe = new_universe;
+        console.log(index, users);
+        await fs.writeFile(heroData, JSON.stringify(users, null, 2));
+        res.status(200).send("Successful!");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.toString());
+    }
+})
 
 // Start the server
 const PORT = process.env.PORT || 3000;
