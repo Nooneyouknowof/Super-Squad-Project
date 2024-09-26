@@ -147,6 +147,27 @@ app.put("/update-hero", async (req, res) => {
     }
 })
 
+app.delete("/delete/:name/:power/:universe", async (req, res) => {
+    const { name, power, universe } = req.params;
+    console.log(req.params);
+    const data = await fs.readFile(heroData, 'utf8');
+    let users = JSON.parse(data);
+
+    const index = users.findIndex(user => user.name === name && user.power === power && user.universe === universe);
+
+    if (index !== -1) {
+        users.splice(index, 1);
+        try {
+            await fs.writeFile(heroData, JSON.stringify(users, null, 2));
+        } catch (error) {
+            console.error('Failed to write to database');
+        }
+        return res.status(200).send(`Removed user ${name}`);
+    } else {
+        return res.status(404).send("User could not be found");
+    }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

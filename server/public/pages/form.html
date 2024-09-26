@@ -147,6 +147,24 @@
       <button type="submit">Update Form</button>
     </div>
   </form>
+  <form id="delete-hero">
+    <h1>Remove Hero Form</h1>
+    <div class="row">
+      <label for="delete-name">Name: </label>
+      <input type="text" id="delete-name" required>
+    </div>
+    <div class="row">
+      <label for="delete-power">Power: </label>
+      <input type="text" id="delete-power" required>
+    </div>
+    <div class="row">
+      <label for="delete-universe">Universe: </label>
+      <input type="text" id="delete-universe" required="required">
+    </div>
+    <div class="row">
+      <button type="submit">Delete</button>
+    </div>
+  </form>
   <script>
     const updateTable = async () => {
       const form = await fetch("/hero-form");
@@ -158,6 +176,7 @@
       });
     }
     document.addEventListener("DOMContentLoaded", updateTable);
+
     const updateHeroForm = document.getElementById("update-hero-form")
     updateHeroForm.addEventListener("submit", e =>{
       const old_name = document.getElementById("old_name").value;
@@ -176,11 +195,28 @@
           body: JSON.stringify({old_name, old_power, old_universe, new_name, new_power, new_universe})
         }).then(data => {
           updateTable();
-        })
+        });
       } catch (error) {
         console.error(error);
       }
     });
+
+    const deleteHeroForm = document.getElementById("delete-hero")
+    deleteHeroForm.addEventListener("submit", e => {
+      const name = document.getElementById("delete-name").value;
+      const power = document.getElementById("delete-power").value;
+      const universe = document.getElementById("delete-universe").value;
+      e.preventDefault();
+      try {
+        fetch(`/delete/${name}/${power}/${universe}`, {
+          method: 'DELETE'
+        }).then(data => {
+          updateTable();
+        });
+      } catch (error) {
+        console.error(error.message);
+      }
+    })
   </script>
 </body>
 </html>

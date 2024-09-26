@@ -1,9 +1,17 @@
-Resources:
-  Layer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      Description: !Sub
-        - Stack ${AWS::StackName} Layer ${ResourceName}
-        - ResourceName: Layer
-      ContentUri: src/Layer
-      RetentionPolicy: Retain
+[
+  {
+    "name": "Superman",
+    "power": "Flight, Super Strength",
+    "universe": "DC"
+  },
+  {
+    "name": "Beta",
+    "power": "N/A",
+    "universe": "The Cosmos"
+  },
+  {
+    "name": "Sigma",
+    "power": "Rizz",
+    "universe": "The Cosmos"
+  }
+]
